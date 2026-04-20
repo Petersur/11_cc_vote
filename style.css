@@ -1,0 +1,574 @@
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Design tokens (Ferrari-inspired) ─── */
+:root {
+  --red:          #DA291C;
+  --red-dark:     #B01E0A;
+  --black:        #000000;
+  --dark-surface: #303030;
+  --near-black:   #181818;
+  --dark-gray:    #666666;
+  --mid-gray:     #8F8F8F;
+  --silver-gray:  #969696;
+  --light-gray:   #D2D2D2;
+  --border-gray:  #CCCCCC;
+  --white:        #FFFFFF;
+
+  --font-head:  'Barlow Condensed', Arial, Helvetica, sans-serif;
+  --font-body:  'Barlow', Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: var(--white);
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  color: var(--near-black);
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════
+   HERO HEADER — Absolute Black
+═══════════════════════════════ */
+header {
+  flex-shrink: 0;
+  background: var(--black);
+  padding: 24px 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: headerShrink 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+  transition: padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              gap 0.5s ease;
+}
+
+@keyframes headerShrink {
+  from { padding-top: 88px; padding-bottom: 80px; }
+  to   { padding-top: 24px; padding-bottom: 20px; }
+}
+
+.brand {
+  font-family: var(--font-head);
+  font-size: 6.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  line-height: 0.6;
+  user-select: none;
+  transition: font-size 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-sub {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--silver-gray);
+  text-transform: uppercase;
+  overflow: hidden;
+  max-height: 2em;
+  opacity: 1;
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+}
+
+/* ═══════════════════════════════
+   STICKY WRAPPER — holds vote + button strip
+═══════════════════════════════ */
+.sticky-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* ═══════════════════════════════
+   DARK EDITORIAL VOTING
+═══════════════════════════════ */
+.vote-section {
+  background: #525252;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 14px 40px 16px;
+  gap: 14px;
+  transition: padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              gap 0.5s ease;
+}
+
+/* ─── Arena ─── */
+.arena {
+  display: flex;
+  align-items: center;
+  width: min(960px, 92vw);
+}
+
+/* ─── Option ─── */
+.option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 32px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: opacity 0.35s ease, filter 0.35s ease,
+              background 0.2s ease, border-color 0.2s ease,
+              padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeIn 0.4s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.option:hover:not(.voted):not(.lost) {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.option:hover:not(.voted):not(.lost) .option-label {
+  color: var(--white);
+}
+
+.option:hover:not(.voted):not(.lost) .option-sub {
+  color: var(--light-gray);
+  letter-spacing: 1.4px;
+}
+
+.option.voted .option-label {
+  color: var(--white);
+}
+
+.option.lost {
+  opacity: 0.35;
+  filter: grayscale(80%);
+  cursor: default;
+  pointer-events: none;
+}
+
+.option.lost .option-label {
+  color: var(--dark-gray);
+}
+
+.option-label {
+  font-family: var(--font-head);
+  font-size: 3.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+  transition: color 0.2s,
+              font-size 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.option-sub {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--silver-gray);
+  text-transform: uppercase;
+  text-align: center;
+  min-height: 1.3em;
+  overflow: hidden;
+  transition: color 0.2s, letter-spacing 0.2s,
+              opacity 0.3s ease, max-height 0.4s ease;
+}
+
+/* ─── Center column ─── */
+.center-col {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 24px;
+  gap: 0;
+}
+
+.vert-rule {
+  width: 1px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.15);
+  transition: height 0.5s ease;
+}
+
+/* ─── Refresh button (Ferrari Red CTA) ─── */
+.refresh-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  margin: 0 16px;
+  background: var(--red);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.35s ease;
+}
+
+.refresh-btn:hover {
+  background: var(--red-dark);
+}
+
+.refresh-btn.spinning {
+  transform: rotate(360deg);
+}
+
+.refresh-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--white);
+}
+
+/* ─── Result message ─── */
+.result-msg {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--silver-gray);
+  text-transform: uppercase;
+  min-height: 1.3em;
+  text-align: center;
+  animation: slideUp 0.3s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Win stat (percentage shown on winner after vote) ─── */
+@keyframes statFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.option-stat {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: center;
+  min-height: 2rem;
+  visibility: hidden;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+}
+
+.option.voted .option-stat {
+  visibility: visible;
+  animation: statFade 0.4s ease both;
+}
+
+/* ─── Toggle button (on white strip) ─── */
+.toggle-btn {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.28px;
+  text-transform: uppercase;
+  color: var(--near-black);
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 2px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.toggle-btn:hover {
+  background: var(--red);
+  color: var(--white);
+  border-color: var(--red);
+}
+
+/* ─── Language buttons ─── */
+.lang-btn {
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--mid-gray);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.lang-btn:hover:not(.lang-active) {
+  color: var(--near-black);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.lang-btn.lang-active {
+  background: var(--red);
+  color: var(--white);
+  border-color: var(--red);
+}
+
+/* ─── Button strip below voting area ─── */
+.btn-strip {
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+/* ─── Results table ─── */
+.results-wrap {
+  align-self: stretch;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  background: var(--white);
+  transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease;
+}
+
+.results-wrap.open {
+  max-height: 9999px;
+  opacity: 1;
+}
+
+.results-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+  background: var(--white);
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--mid-gray);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.results-table th:not(:first-child) {
+  text-align: right;
+}
+
+.results-table td {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--dark-gray);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.results-table td:first-child {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--near-black);
+  letter-spacing: 0.03em;
+}
+
+.results-table td:not(:first-child) {
+  text-align: right;
+}
+
+.results-table td.pct {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--near-black);
+}
+
+
+/* ─── Bar chart in pct column ─── */
+.pct-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.pct-bar-wrap {
+  width: 80px;
+  height: 3px;
+  background: var(--light-gray);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.pct-bar {
+  height: 100%;
+  background: var(--red);
+  border-radius: 1px;
+  transition: width 0.5s ease;
+}
+
+/* ─── Current pair row highlights ─── */
+.results-table tbody tr.row-winner td {
+  background: rgba(218, 41, 28, 0.06);
+}
+
+.results-table tbody tr.row-winner td:first-child {
+  font-weight: 700;
+  color: var(--near-black);
+  border-left: 3px solid var(--red);
+  padding-left: 5px;
+}
+
+.results-table tbody tr.row-loser td {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.results-table tbody tr.row-loser td:first-child {
+  border-left: 3px solid var(--border-gray);
+  padding-left: 5px;
+}
+
+.results-table tbody tr.row-current td {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.results-table tbody tr.row-current td:first-child {
+  border-left: 3px solid var(--border-gray);
+  padding-left: 5px;
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE — Mobile (≤600px)
+═══════════════════════════════ */
+@media (max-width: 600px) {
+
+  @keyframes headerShrink {
+    from { padding-top: 36px; padding-bottom: 30px; }
+    to   { padding-top: 14px; padding-bottom: 12px; }
+  }
+
+  header {
+    padding: 14px 0 12px;
+    gap: 8px;
+  }
+
+  .brand {
+    font-size: 3rem;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+  }
+
+  .vote-section {
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  .arena {
+    width: 100%;
+  }
+
+  .option {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .option-label {
+    font-size: 1.9rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .option-stat {
+    font-size: 1.2rem;
+    min-height: 1.4rem;
+  }
+
+  .option-sub {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .center-col {
+    padding: 0 10px;
+  }
+
+  .refresh-btn {
+    width: 32px;
+    height: 32px;
+    margin: 0 8px;
+  }
+
+  .refresh-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .vert-rule {
+    height: 36px;
+  }
+
+  .btn-strip {
+    padding: 10px 16px;
+  }
+
+  .results-inner {
+    padding: 20px 16px 70px;
+  }
+
+  .pct-bar-wrap {
+    width: 50px;
+  }
+
+  footer {
+    padding: 16px 20px;
+  }
+}
+
+/* ═══════════════════════════════
+   FOOTER — Dark Surface
+═══════════════════════════════ */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  background: var(--dark-surface);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-text {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--mid-gray);
+  text-transform: uppercase;
+}

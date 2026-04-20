@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAPIDPOLL</title>
+  <link rel="icon" type="image/png" href="check.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══ Black Cinematic Hero ══ -->
+  <header>
+    <span class="brand">RAPIDPOLL</span>
+    <span class="brand-sub">you decide</span>
+  </header>
+
+  <!-- ══ Dark Editorial Voting ══ -->
+  <div class="sticky-wrapper">
+
+    <div class="vote-section">
+
+      <div class="arena">
+
+        <div class="option" id="opt-a" onclick="castVote('a')">
+          <span class="option-label" id="label-a">—</span>
+          <div class="option-stat" id="stat-a"></div>
+          <span class="option-sub" id="sub-a">Click to vote</span>
+        </div>
+
+        <div class="center-col">
+          <div class="vert-rule"></div>
+          <button class="refresh-btn" id="refresh-btn" onclick="triggerRefresh()" title="New pair">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4C7.58 4 4 7.58 4 12s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <div class="vert-rule"></div>
+        </div>
+
+        <div class="option" id="opt-b" onclick="castVote('b')">
+          <span class="option-label" id="label-b">—</span>
+          <div class="option-stat" id="stat-b"></div>
+          <span class="option-sub" id="sub-b">Click to vote</span>
+        </div>
+
+      </div>
+
+      <div class="result-msg" id="result-msg">&nbsp;</div>
+
+    </div>
+
+    <div class="btn-strip">
+      <button class="lang-btn lang-active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="toggle-btn" id="toggle-btn" onclick="toggleTable()">Show Total Results</button>
+      <button class="lang-btn" id="btn-hu" onclick="setLang('hu')">HU</button>
+    </div>
+
+  </div>
+
+  <div class="results-wrap" id="results-wrap">
+    <div id="results-content"></div>
+  </div>
+
+  <!-- ══ Dark Surface Footer ══ -->
+  <footer>
+    <span class="footer-text">Think less &mdash; Pick fast &mdash; Have fun</span>
+  </footer>
+
+  <script src="script.js?v=2"></script>
+</body>
+</html>
