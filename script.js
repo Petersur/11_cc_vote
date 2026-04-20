@@ -1,3 +1,7 @@
+const SUPABASE_URL = 'https://woflbynmglazegzafxuo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvZmxieW5tZ2xhemVnemFmeHVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzYzMzYsImV4cCI6MjA5MjI1MjMzNn0.JvTlP8T7XkPpxcRIKUpNeSCq7uT5DIwCIsfFpp7YjXc';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const TRANSLATIONS = {
   en: {
     labels: [
@@ -35,24 +39,7 @@ const TRANSLATIONS = {
   }
 };
 
-const OPTIONS = [
-  { id: 1,  wins: 0, appearances: 0 },
-  { id: 2,  wins: 0, appearances: 0 },
-  { id: 3,  wins: 0, appearances: 0 },
-  { id: 4,  wins: 0, appearances: 0 },
-  { id: 5,  wins: 0, appearances: 0 },
-  { id: 6,  wins: 0, appearances: 0 },
-  { id: 7,  wins: 0, appearances: 0 },
-  { id: 8,  wins: 0, appearances: 0 },
-  { id: 9,  wins: 0, appearances: 0 },
-  { id: 10, wins: 0, appearances: 0 },
-  { id: 11, wins: 0, appearances: 0 },
-  { id: 12, wins: 0, appearances: 0 },
-  { id: 13, wins: 0, appearances: 0 },
-  { id: 14, wins: 0, appearances: 0 },
-  { id: 15, wins: 0, appearances: 0 },
-  { id: 16, wins: 0, appearances: 0 },
-];
+let OPTIONS = [];
 
 let currentA     = null;
 let currentB     = null;
@@ -155,6 +142,7 @@ function castVote(side) {
   msg.textContent = tr().votedFor(lbl(winner));
 
   if (tableOpen) renderTable();
+  saveVotes(currentA, currentB);
 }
 
 function toggleTable() {
@@ -255,4 +243,18 @@ function setLang(lang) {
   if (tableOpen) renderTable();
 }
 
-loadPair();
+function saveVotes(a, b) {
+  Promise.all([
+    db.from('options').update({ wins: a.wins, appearances: a.appearances }).eq('id', a.id),
+    db.from('options').update({ wins: b.wins, appearances: b.appearances }).eq('id', b.id),
+  ]).catch(err => console.error('Save error:', err));
+}
+
+async function init() {
+  const { data, error } = await db.from('options').select('*').order('id');
+  if (error) { console.error('Supabase load error:', error); return; }
+  OPTIONS = data;
+  loadPair();
+}
+
+init();
