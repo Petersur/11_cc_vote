@@ -43,11 +43,13 @@
 
         <div class="center-col">
           <div class="vert-rule"></div>
-          <button class="refresh-btn" id="refresh-btn" onclick="triggerRefresh()" title="New pair">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4C7.58 4 4 7.58 4 12s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-            </svg>
-          </button>
+          <div class="center-main">
+            <button class="refresh-btn" id="refresh-btn" onclick="triggerRefresh()" title="New pair">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4C7.58 4 4 7.58 4 12s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+              </svg>
+            </button>
+          </div>
           <div class="vert-rule"></div>
         </div>
 
@@ -63,10 +65,15 @@
 
     </div>
 
-    <div class="btn-strip">
+    <div class="vote-count-bar">
       <button class="lang-btn lang-active" id="btn-en" onclick="setLang('en')">EN</button>
-      <button class="toggle-btn" id="toggle-btn" onclick="toggleTable()">Show Total Results</button>
+      <span class="vote-count" id="vote-count"></span>
       <button class="lang-btn" id="btn-hu" onclick="setLang('hu')">HU</button>
+    </div>
+
+    <div class="btn-strip">
+      <select class="theme-select" id="theme-select" onchange="setTheme(+this.value)"></select>
+      <button class="toggle-btn" id="toggle-btn" onclick="toggleTable()">Show Total Results</button>
     </div>
 
   </div>

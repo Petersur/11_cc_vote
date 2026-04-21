@@ -4,16 +4,10 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const TRANSLATIONS = {
   en: {
-    labels: [
-      'Coffee', 'Tea', 'Mountains', 'Beach',
-      'Dogs', 'Cats', 'Summer', 'Winter',
-      'Morning', 'Night', 'Pizza', 'Sushi',
-      'Books', 'Movies', 'City', 'Countryside'
-    ],
     clickToVote: 'Click to vote',
     showResults: 'Show Total Results',
     hideResults: 'Hide Results',
-    votedFor:    (lbl) => `You voted for ${lbl}`,
+    votedFor:    (name) => `You voted for ${name}`,
     winsOf:      (w, a) => `${w} win${w !== 1 ? 's' : ''} / ${a} match${a !== 1 ? 'es' : ''}`,
     colChoice:   'Choice',
     colWon:      'Won',
@@ -21,16 +15,10 @@ const TRANSLATIONS = {
     colPct:      'Win %',
   },
   hu: {
-    labels: [
-      'Kávé', 'Tea', 'Hegyek', 'Tengerpart',
-      'Kutya', 'Macska', 'Nyár', 'Tél',
-      'Reggel', 'Éjszaka', 'Pizza', 'Szusi',
-      'Könyvek', 'Filmek', 'Város', 'Vidék'
-    ],
     clickToVote: 'Kattints a szavazáshoz',
     showResults: 'Összes eredmény',
     hideResults: 'Elrejtés',
-    votedFor:    (lbl) => `Szavaztál: ${lbl}`,
+    votedFor:    (name) => `Szavaztál: ${name}`,
     winsOf:      (w, a) => `${w} győzelem / ${a} mérkőzés`,
     colChoice:   'Választás',
     colWon:      'Nyert',
@@ -39,17 +27,34 @@ const TRANSLATIONS = {
   }
 };
 
+let THEMES  = [];
 let OPTIONS = [];
 
-let currentA     = null;
-let currentB     = null;
-let voted        = false;
-let tableOpen    = false;
-let lastWinnerId = null;
-let currentLang  = 'en';
+let currentThemeId = null;
+let currentA       = null;
+let currentB       = null;
+let voted          = false;
+let tableOpen      = false;
+let lastWinnerId   = null;
+let currentLang    = 'en';
 
-function tr()        { return TRANSLATIONS[currentLang]; }
-function lbl(opt)    { return tr().labels[opt.id - 1]; }
+function tr()     { return TRANSLATIONS[currentLang]; }
+function lbl(opt) { return currentLang === 'en' ? opt.name_en : opt.name_hu; }
+
+function renderVoteCount() {
+  const total = OPTIONS.reduce((sum, o) => sum + o.wins, 0);
+  const label = currentLang === 'en' ? (total === 1 ? 'vote' : 'votes') : 'szavazat';
+  document.getElementById('vote-count').innerHTML =
+    `<span class="vote-count-num">${total}</span><span class="vote-count-lbl">${label}</span>`;
+}
+
+function renderThemeSelect() {
+  const sel = document.getElementById('theme-select');
+  sel.innerHTML = THEMES.map(t => {
+    const name = currentLang === 'en' ? t.label_en : t.label_hu;
+    return `<option value="${t.id}"${t.id === currentThemeId ? ' selected' : ''}>${name}</option>`;
+  }).join('');
+}
 
 function pickTwo() {
   const shuffled = [...OPTIONS].sort(() => Math.random() - 0.5);
@@ -84,6 +89,7 @@ function loadPair() {
   msg.style.animation = '';
   msg.innerHTML = '&nbsp;';
 
+  renderVoteCount();
   if (tableOpen) renderTable();
 }
 
@@ -141,6 +147,7 @@ function castVote(side) {
   msg.style.animation = '';
   msg.textContent = tr().votedFor(lbl(winner));
 
+  renderVoteCount();
   if (tableOpen) renderTable();
   saveVotes(currentA, currentB);
 }
@@ -219,6 +226,8 @@ function setLang(lang) {
   document.getElementById('btn-en').classList.toggle('lang-active', lang === 'en');
   document.getElementById('btn-hu').classList.toggle('lang-active', lang === 'hu');
 
+  renderThemeSelect();
+
   if (currentA) {
     document.getElementById('label-a').textContent = lbl(currentA);
     document.getElementById('label-b').textContent = lbl(currentB);
@@ -239,7 +248,7 @@ function setLang(lang) {
   }
 
   document.getElementById('toggle-btn').textContent = tableOpen ? tr().hideResults : tr().showResults;
-
+  renderVoteCount();
   if (tableOpen) renderTable();
 }
 
@@ -250,10 +259,37 @@ function saveVotes(a, b) {
   ]).catch(err => console.error('Save error:', err));
 }
 
-async function init() {
-  const { data, error } = await db.from('options').select('*').order('id');
-  if (error) { console.error('Supabase load error:', error); return; }
+async function setTheme(id) {
+  if (id === currentThemeId) return;
+  currentThemeId = id;
+  const { data, error } = await db
+    .from('options')
+    .select('*')
+    .eq('theme_id', currentThemeId)
+    .order('id');
+  if (error) { console.error('Options load error:', error); return; }
   OPTIONS = data;
+  loadPair();
+  if (tableOpen) renderTable();
+}
+
+async function init() {
+  const { data: themes, error: tErr } = await db
+    .from('themes')
+    .select('*')
+    .order('sort_order');
+  if (tErr) { console.error('Themes load error:', tErr); return; }
+  THEMES = themes;
+  currentThemeId = themes[0].id;
+  renderThemeSelect();
+
+  const { data: opts, error: oErr } = await db
+    .from('options')
+    .select('*')
+    .eq('theme_id', currentThemeId)
+    .order('id');
+  if (oErr) { console.error('Options load error:', oErr); return; }
+  OPTIONS = opts;
   loadPair();
 }
 

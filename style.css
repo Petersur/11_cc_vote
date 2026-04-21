@@ -108,6 +108,7 @@ header {
 /* ─── Option ─── */
 .option {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -159,13 +160,18 @@ header {
 
 .option-label {
   font-family: var(--font-head);
-  font-size: 3.8rem;
+  font-size: clamp(1.2rem, 6.5vw, 3.8rem);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 0.03em;
   line-height: 1;
+  padding-bottom: 0.15em;
   text-align: center;
   user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   transition: color 0.2s,
               font-size 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -189,8 +195,16 @@ header {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding: 0 24px;
+  padding: 0 12px;
   gap: 0;
+}
+
+.center-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 8px;
+  min-width: 48px;
 }
 
 .vert-rule {
@@ -205,7 +219,6 @@ header {
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-  margin: 0 16px;
   background: var(--red);
   border: none;
   border-radius: 2px;
@@ -273,6 +286,35 @@ header {
   animation: statFade 0.4s ease both;
 }
 
+/* ─── Theme selector ─── */
+.theme-select {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.28px;
+  text-transform: uppercase;
+  color: var(--near-black);
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='5' viewBox='0 0 10 5'%3E%3Cpath d='M0 0l5 5 5-5z' fill='%23666666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 2px;
+  padding: 10px 32px 10px 20px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 175px;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.theme-select:hover,
+.theme-select:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
 /* ─── Toggle button (on white strip) ─── */
 .toggle-btn {
   font-family: var(--font-body);
@@ -285,6 +327,8 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.28);
   border-radius: 2px;
   padding: 10px 20px;
+  width: 175px;
+  white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
@@ -459,6 +503,38 @@ header {
   padding-left: 5px;
 }
 
+/* ─── Vote count bar (always visible, lang toggles on sides) ─── */
+.vote-count-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 16px;
+  background: var(--light-gray);
+}
+
+.vote-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vote-count-num {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--near-black);
+  letter-spacing: 0.02em;
+}
+
+.vote-count-lbl {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--mid-gray);
+  text-transform: uppercase;
+}
+
 /* ═══════════════════════════════
    RESPONSIVE — Mobile (≤600px)
 ═══════════════════════════════ */
@@ -497,9 +573,7 @@ header {
   }
 
   .option-label {
-    font-size: 1.9rem;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    font-size: clamp(1.2rem, 6.5vw, 3.8rem);
   }
 
   .option-stat {
@@ -519,6 +593,9 @@ header {
   .refresh-btn {
     width: 32px;
     height: 32px;
+  }
+
+  .center-main {
     margin: 0 8px;
   }
 
@@ -533,6 +610,13 @@ header {
 
   .btn-strip {
     padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .toggle-btn,
+  .theme-select {
+    flex: 1;
+    width: auto;
   }
 
   .results-inner {
